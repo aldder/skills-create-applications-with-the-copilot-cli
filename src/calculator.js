@@ -2,7 +2,8 @@
 
 /**
  * A CLI calculator supporting addition (+), subtraction (-),
- * multiplication (*), and division (/).
+ * multiplication (*), division (/), modulo (%), power (**),
+ * and square root (sqrt).
  */
 
 function add(left, right) {
@@ -25,6 +26,26 @@ function divide(left, right) {
   return left / right;
 }
 
+function modulo(left, right) {
+  if (right === 0) {
+    throw new Error('Cannot divide by zero.');
+  }
+
+  return left % right;
+}
+
+function power(base, exponent) {
+  return base ** exponent;
+}
+
+function squareRoot(number) {
+  if (number < 0) {
+    throw new Error('Cannot calculate the square root of a negative number.');
+  }
+
+  return Math.sqrt(number);
+}
+
 const operations = {
   '+': add,
   add,
@@ -38,6 +59,14 @@ const operations = {
   '/': divide,
   divide,
   division: divide,
+  '%': modulo,
+  modulo,
+  '**': power,
+  power,
+  exponentiation: power,
+  sqrt: squareRoot,
+  squareRoot,
+  'square-root': squareRoot,
 };
 
 function calculate(operation, left, right) {
@@ -63,12 +92,15 @@ function parseNumber(value, name) {
 function runCli(cliArguments) {
   const [operation, leftInput, rightInput] = cliArguments;
 
-  if (cliArguments.length !== 3) {
+  const isSquareRoot = ['sqrt', 'squareRoot', 'square-root'].includes(operation);
+  const expectedArgumentCount = isSquareRoot ? 2 : 3;
+
+  if (cliArguments.length !== expectedArgumentCount) {
     throw new Error('Usage: node src/calculator.js <operation> <left> <right>');
   }
 
   const left = parseNumber(leftInput, 'Left operand');
-  const right = parseNumber(rightInput, 'Right operand');
+  const right = isSquareRoot ? undefined : parseNumber(rightInput, 'Right operand');
 
   console.log(calculate(operation, left, right));
 }
@@ -87,6 +119,9 @@ module.exports = {
   subtract,
   multiply,
   divide,
+  modulo,
+  power,
+  squareRoot,
   calculate,
   runCli,
 };
